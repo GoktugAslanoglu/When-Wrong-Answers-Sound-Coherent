@@ -260,7 +260,7 @@ def validation_record(name: str, path: Path, rows: list[dict[str, Any]]) -> dict
     off_grid_scores = [score for score in scores if isinstance(score, (int, float)) and round(float(score), 10) not in SCORE_LEVELS]
     return {
         "name": name,
-        "path": str(path),
+        "path": path.relative_to(ARTIFACT_ROOT).as_posix(),
         "rows": len(rows),
         "unique_keys": len(set(keys)),
         "duplicate_keys": len(keys) - len(set(keys)),

@@ -2,7 +2,7 @@
   "validation": [
     {
       "name": "Llama-3.1-8B_abductive",
-      "path": "C:\\Users\\PC\\Downloads\\ts_llama_abductive_full_1(1).jsonl",
+      "path": "data/gpt4o_blind/ts_llama_abductive_full_1.jsonl",
       "rows": 3970,
       "unique_keys": 3970,
       "duplicate_keys": 0,
@@ -24,7 +24,7 @@
     },
     {
       "name": "Qwen2.5-7B_abductive",
-      "path": "C:\\Users\\PC\\Downloads\\ts_qwen_abductive_full_1(2).jsonl",
+      "path": "data/gpt4o_blind/ts_qwen_abductive_full_1.jsonl",
       "rows": 3970,
       "unique_keys": 3970,
       "duplicate_keys": 0,
@@ -46,7 +46,7 @@
     },
     {
       "name": "Llama-3.1-8B_control",
-      "path": "C:\\Users\\PC\\Downloads\\ts_llama_control_full_1(1).jsonl",
+      "path": "data/gpt4o_blind/ts_llama_control_full_1.jsonl",
       "rows": 300,
       "unique_keys": 300,
       "duplicate_keys": 0,
@@ -68,7 +68,7 @@
     },
     {
       "name": "Qwen2.5-7B_control",
-      "path": "C:\\Users\\PC\\Downloads\\ts_qwen_control_full_1.jsonl",
+      "path": "data/gpt4o_blind/ts_qwen_control_full_1.jsonl",
       "rows": 300,
       "unique_keys": 300,
       "duplicate_keys": 0,
