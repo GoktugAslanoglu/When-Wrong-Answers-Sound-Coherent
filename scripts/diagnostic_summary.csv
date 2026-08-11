@@ -1,0 +1,15 @@
+split,candidate_model,parse_error,has_causal_markers,rows,score_mean,accuracy
+abductive,Llama-3.1-8B,False,True,3671,0.7069463361481886,0.6330700081721602
+abductive,Llama-3.1-8B,False,False,75,0.736,0.6133333333333333
+abductive,Llama-3.1-8B,True,True,219,0.3242009132420091,0.1598173515981735
+abductive,Llama-3.1-8B,True,False,5,0.32,0.0
+abductive,Qwen2.5-7B,False,True,3817,0.7521089861147499,0.7246528687450877
+abductive,Qwen2.5-7B,False,False,118,0.7372881355932204,0.6694915254237288
+abductive,Qwen2.5-7B,True,True,33,0.3515151515151515,0.12121212121212122
+abductive,Qwen2.5-7B,True,False,2,0.6000000000000001,0.0
+control,Llama-3.1-8B,False,True,234,0.9675213675213675,0.9914529914529915
+control,Llama-3.1-8B,False,False,6,1.0,1.0
+control,Llama-3.1-8B,True,False,59,0.10847457627118645,0.6101694915254238
+control,Llama-3.1-8B,True,True,1,1.0,1.0
+control,Qwen2.5-7B,False,True,295,0.9932203389830508,1.0
+control,Qwen2.5-7B,False,False,5,1.0,1.0

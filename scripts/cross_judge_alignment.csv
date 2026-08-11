@@ -1,0 +1,5 @@
+split,candidate_model,qwen_rows,gpt4o_rows,matched_rows,unmatched_rows
+abductive,Llama-3.1-8B,3970,3970,3970,-3971
+abductive,Qwen2.5-7B,3970,3970,3970,-3971
+control,Llama-3.1-8B,300,300,300,-301
+control,Qwen2.5-7B,300,300,300,-301
