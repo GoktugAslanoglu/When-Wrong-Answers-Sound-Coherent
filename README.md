@@ -1,21 +1,56 @@
-# ACTP supplementary reproducibility artifact
+# When Wrong Answers Sound Coherent
 
-This artifact contains the row-aligned data and analysis code used in the revised paper.
+Reproducibility materials for **“When Wrong Answers Sound Coherent: Evaluating Answer-Conditioned Explanatory Generation in LLMs”** by Göktuğ Aslanoğlu and Viswanadh Vadlamani.
+
+The paper introduces **Answer-Conditioned Trace Probing (ACTP)**, a paired evaluation framework for separating answer correctness from the apparent coherence of an explanation. Condition A lets a model answer and explain freely. Condition B supplies that model’s Condition-A answer as a fixed anchor and asks it to justify the anchor across five narrative prompt templates.
+
+The study evaluates Llama-3.1-8B-Instruct and Qwen2.5-7B-Instruct on 397 abductive-reasoning items and 30 arithmetic controls. GPT-4o is the primary blind trajectory judge; Qwen2.5-32B-Instruct is included as a secondary, reference-aware judge-sensitivity analysis.
+
+## Repository status
+
+The analysis code and saved model/judge outputs are sufficient to reproduce the reported statistics without making API calls. This is an analysis-reproduction artifact, not a complete end-to-end generation package: it does not currently include the code and immutable configuration used to generate the original candidate-model responses. The manuscript was accepted to the non-archival track at INLG 2026.
+
+Important data-licensing note: the derived JSONL files include prompt text based on the official SemEval-2026 Task 12 dataset. As of 7 September 2026, the [upstream dataset repository](https://github.com/sooo66/semeval2026-task12-dataset) does not state an explicit redistribution license. The authors should obtain written permission or a license clarification from the dataset maintainers before treating the `data/` directory as redistributable. See [Data provenance and licensing](#data-provenance-and-licensing).
 
 ## Contents
 
-- `data/gpt4o_blind/`: blind GPT-4o judgments. Each JSONL row preserves the prompt, raw candidate output, parsed reasoning and answer, correctness, parse flag, trajectory score, and judge rationale.
-- `data/qwen_reference_aware/`: secondary reference-aware Qwen2.5-32B-Instruct judgments used only for the additional judge-sensitivity analysis.
-- `scripts/`: artifact-relative analysis programs plus the credential-safe Batch API judge pipeline used for the blind GPT-4o evaluation.
-- `expected_outputs/`: paper-ready reports and key CSV outputs from the verified run.
+```text
+.
+├── data/
+│   ├── gpt4o_blind/              # Primary blind-judge rows
+│   └── qwen_reference_aware/     # Secondary judge-sensitivity rows
+├── expected_outputs/             # Reference reports and key tables
+├── scripts/
+│   ├── inspect_structure.py
+│   ├── analyze_results.py
+│   ├── analyze_forced_condition.py
+│   ├── cross_judge_analysis.py
+│   └── openai_judge_pipeline.py
+├── requirements.txt              # Statistical analysis dependencies
+└── requirements-judge.txt        # Optional OpenAI judge dependency
+```
 
-## Environment
+Each judge directory contains four JSONL files: abductive and control results for each candidate model. The primary directory contains 8,540 scored rows in total (3,970 abductive and 300 control rows per candidate model); the secondary directory has the same row structure.
 
-Python 3.10 or newer. Exact versions from the verified rerun are pinned in `requirements.txt`.
+Each row records identifiers, condition and template, candidate prompt and output, parsed answer and reasoning, exact-answer correctness, parse diagnostics, trajectory score, and judge rationale. The two candidate-model files align on source item, topic, template, condition, and gold answer. In the abductive split, 710 Condition-B prompts differ across candidate models because 142 source items produced different model-specific Condition-A anchors, each reused across five templates. Condition-B values therefore should not be interpreted as a clean between-model ability comparison.
 
-## Commands
+## Setup
 
-From the artifact root:
+Python 3.10 or newer is recommended.
+
+```bash
+git clone https://github.com/GoktugAslanoglu/When-Wrong-Answers-Sound-Coherent.git
+cd When-Wrong-Answers-Sound-Coherent
+python -m venv .venv
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+Activate the environment with `.venv\Scripts\Activate.ps1` on PowerShell or `source .venv/bin/activate` on macOS/Linux.
+
+## Reproduce the analysis
+
+Run these commands from the repository root:
 
 ```bash
 python scripts/inspect_structure.py
@@ -24,28 +59,72 @@ python scripts/analyze_forced_condition.py
 python scripts/cross_judge_analysis.py
 ```
 
-The scripts write detailed reports, CSV tables, and figures beside the scripts. Reproducing API inference is not required to reproduce the reported statistical analysis because all row-level judge outputs and rationales are included.
+The analysis commands write reports, tables, and figures to `reproduced_outputs/`. Reference outputs from the verified run are stored in `expected_outputs/`.
 
-## Recreate judge requests
+The analysis uses the source item as the clustering unit because each abductive item appears under five templates and two conditions. Exact-answer accuracy and judged trajectory coherence are reported as separate outcomes. For Condition B, consult `reproduced_outputs/forced_condition_report.md` and the corresponding CSV files before making cross-model comparisons.
 
-The released `scripts/openai_judge_pipeline.py` freezes the blind rubric, prepares resumable OpenAI Batch API requests, validates responses, retries unresolved requests, and merges judgments in source-row order. Preparing a pilot makes no API calls:
+## Optional: reconstruct GPT-4o judge requests
 
-```bash
-python scripts/openai_judge_pipeline.py prepare --project-root . --run-dir judge_pilot --model gpt-4o --mode blind --limit-per-dataset 1
-```
-
-The `run` command requires an `OPENAI_API_KEY` environment variable and paid API access. The script never accepts or prints a key. Existing row-level judgments are included, so API access is not required to reproduce the paper's statistical analysis.
-
-## Recreate judge requests
-
-The released `scripts/openai_judge_pipeline.py` freezes the blind rubric, prepares resumable OpenAI Batch API requests, validates responses, retries unresolved requests, and merges judgments in source-row order. Preparing a pilot makes no API calls:
+Re-running the judge is **not** required to reproduce the statistical analysis. To inspect the frozen rubric and create a four-request pilot without contacting the API:
 
 ```bash
-python scripts/openai_judge_pipeline.py prepare --project-root . --run-dir judge_pilot --model gpt-4o --mode blind --limit-per-dataset 1
+python -m pip install -r requirements-judge.txt
+python scripts/openai_judge_pipeline.py prepare \
+  --project-root . \
+  --run-dir judge_pilot \
+  --model gpt-4o \
+  --mode blind \
+  --limit-per-dataset 1
 ```
 
-The `run` command requires an `OPENAI_API_KEY` environment variable and paid API access. The script never accepts or prints a key. Existing row-level judgments are included, so API access is not required to reproduce the paper's statistical analysis.
+Submitting a prepared run requires paid OpenAI API access and an `OPENAI_API_KEY` supplied through the process environment:
 
-## Security
+```bash
+python scripts/openai_judge_pipeline.py run --run-dir judge_pilot
+```
 
-No API keys, access tokens, or credentials are included. The original exploratory notebook is intentionally excluded.
+The pipeline does not accept an API key as a command-line argument and does not print it. Do not commit `.env` files, credentials, Batch API response directories, or copied notebook outputs.
+
+## Data provenance and licensing
+
+The abductive items originate from [SemEval-2026 Task 12: Abductive Event Reasoning](https://github.com/sooo66/semeval2026-task12-dataset). Please cite the task paper in addition to this work:
+
+```bibtex
+@article{cao2026aer,
+  title   = {SemEval-2026 Task 12: Abductive Event Reasoning: Towards Real-World Event Causal Inference for Large Language Models},
+  author  = {Cao, Pengfei and Yang, Mingxuan and Chen, Yubo and Zhang, Chenlong and Liu, Mingxuan and Liu, Kang and Zhao, Jun},
+  year    = {2026},
+  eprint  = {2603.21720},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url     = {https://arxiv.org/abs/2603.21720}
+}
+```
+
+No license in this repository can grant rights to upstream dataset text or third-party source material. Until the dataset maintainers clarify redistribution terms, users should obtain the official dataset from its original source and treat the released prompt text as rights-restricted research material. A safer public release would distribute derived scores, identifiers, prompt hashes, and model outputs while requiring users to reconstruct dataset-dependent prompts locally.
+
+The repository itself does not yet include a software license. Under default copyright, that means reuse rights have not been granted. Before creating a versioned release, the authors should choose a license for their original code and documentation while keeping the dataset-derived files under a separate notice.
+
+## Citation
+
+Until the arXiv identifier is available, cite the manuscript as:
+
+```bibtex
+@misc{aslanoglu2026wronganswers,
+  title  = {When Wrong Answers Sound Coherent: Evaluating Answer-Conditioned Explanatory Generation in LLMs},
+  author = {Aslanoğlu, Göktuğ and Vadlamani, Viswanadh},
+  year   = {2026},
+  note   = {Accepted to the non-archival track at INLG 2026}
+}
+```
+
+Replace this entry with the arXiv citation after the preprint is assigned an identifier.
+
+## Security and privacy
+
+No API keys or access tokens are intentionally included. Before every public release, scan both the working tree and Git history for credentials, local paths, private email addresses, and generated run directories. If a credential has ever been exposed, revoke it; deleting it from the latest commit is not sufficient.
+
+## Authors
+
+- Göktuğ Aslanoğlu — Independent Researcher
+- Viswanadh Vadlamani — Safe App
