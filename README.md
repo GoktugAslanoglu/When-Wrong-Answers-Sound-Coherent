@@ -8,9 +8,7 @@ The study evaluates Llama-3.1-8B-Instruct and Qwen2.5-7B-Instruct on 397 abducti
 
 ## Repository status
 
-The analysis code and saved model/judge outputs are sufficient to reproduce the reported statistics without making API calls. This is an analysis-reproduction artifact, not a complete end-to-end generation package: it does not currently include the code and immutable configuration used to generate the original candidate-model responses. The manuscript was accepted to the non-archival track at INLG 2026.
-
-Important data-licensing note: the derived JSONL files include prompt text based on the official SemEval-2026 Task 12 dataset. As of 7 September 2026, the [upstream dataset repository](https://github.com/sooo66/semeval2026-task12-dataset) does not state an explicit redistribution license. The authors should obtain written permission or a license clarification from the dataset maintainers before treating the `data/` directory as redistributable. See [Data provenance and licensing](#data-provenance-and-licensing).
+The analysis code and saved model/judge outputs are sufficient to reproduce the reported statistics without making API calls. This is an analysis-reproduction artifact, not a complete end-to-end generation package: it does not currently include the code and immutable configuration used to generate the original candidate-model responses.
 
 ## Contents
 
