@@ -101,10 +101,6 @@ The abductive items originate from [SemEval-2026 Task 12: Abductive Event Reason
 }
 ```
 
-No license in this repository can grant rights to upstream dataset text or third-party source material. Until the dataset maintainers clarify redistribution terms, users should obtain the official dataset from its original source and treat the released prompt text as rights-restricted research material. A safer public release would distribute derived scores, identifiers, prompt hashes, and model outputs while requiring users to reconstruct dataset-dependent prompts locally.
-
-The repository itself does not yet include a software license. Under default copyright, that means reuse rights have not been granted. Before creating a versioned release, the authors should choose a license for their original code and documentation while keeping the dataset-derived files under a separate notice.
-
 ## Citation
 
 Until the arXiv identifier is available, cite the manuscript as:
